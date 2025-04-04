@@ -30,4 +30,7 @@ en la parte inferior de la pantalla y aagregar ahi los botones para aumentar, di
 
 ## Cuarto Commit
 
-En proceso...
+Cambiados los botones flotantes por persistentes en el widget Scaffold.
+
+![agregados los botones flotantes como persistentes ](https://github.com/user-attachments/assets/2b37c59a-27dc-42a0-9163-0846c253e102)
+
