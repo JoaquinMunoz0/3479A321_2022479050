@@ -21,4 +21,13 @@ Para el segundo commit tenemos los cambios realizados a partir de lo pedido en e
 
 ## Tercer Commit
 
+Agregados funciones que permiten disminuir y reiniciar el contador por medio de FloatingActionButtons.
+
+![Agregados botones disminuir y reiniciar](https://github.com/user-attachments/assets/c29580cc-7c45-473b-b0af-53678f163078)
+
+Sin embargo como pide el laboratorio es incorporar al Widget Scaffold la opción de “Botones persistentes del pie”
+en la parte inferior de la pantalla y aagregar ahi los botones para aumentar, disminuir y reiniciar el contador.
+
+## Cuarto Commit
+
 En proceso...
