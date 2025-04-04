@@ -51,6 +51,32 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // 🛠️ Método refactorizado para construir los botones
+  Widget _construirBotones() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton.icon(
+          onPressed: _incrementarContador,
+          icon: const Icon(Icons.add),
+          label: const Text('Aumentar'),
+        ),
+        const SizedBox(width: 12),
+        ElevatedButton.icon(
+          onPressed: _disminuirContador,
+          icon: const Icon(Icons.remove),
+          label: const Text('Disminuir'),
+        ),
+        const SizedBox(width: 12),
+        ElevatedButton.icon(
+          onPressed: _reiniciarContador,
+          icon: const Icon(Icons.refresh),
+          label: const Text('Reiniciar'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,18 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       persistentFooterButtons: [
-        ElevatedButton(
-          onPressed: _incrementarContador,
-          child: const Text('Aumentar'),
-        ),
-        ElevatedButton(
-          onPressed: _disminuirContador,
-          child: const Text('Disminuir'),
-        ),
-        ElevatedButton(
-          onPressed: _reiniciarContador,
-          child: const Text('Reiniciar'),
-        ),
+        _construirBotones(),
       ],
     );
   }
