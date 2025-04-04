@@ -34,3 +34,11 @@ Cambiados los botones flotantes por persistentes en el widget Scaffold.
 
 ![agregados los botones flotantes como persistentes ](https://github.com/user-attachments/assets/2b37c59a-27dc-42a0-9163-0846c253e102)
 
+## Quinto Commit y ultimo.
+
+Se realizaron cambios en los botones persistentes agregandoles sus iconos correspondientes y centrandolos para mas comodidad, ademas de refactorizar el codigo con el fin de que sea mas limpio y legible.
+
+![Producto final](https://github.com/user-attachments/assets/2888618f-2c98-48be-a737-016d4d85f8fd)
+
+
+
