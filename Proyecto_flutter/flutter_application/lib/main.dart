@@ -67,32 +67,23 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 20), // Espacio entre los elementos
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: _incrementarContador,
-                  tooltip: 'Aumentar',
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(width: 20), // Espacio entre botones
-                FloatingActionButton(
-                  onPressed: _disminuirContador,
-                  tooltip: 'Disminuir',
-                  child: const Icon(Icons.remove),
-                ),
-                const SizedBox(width: 20), // Espacio entre botones
-                FloatingActionButton(
-                  onPressed: _reiniciarContador,
-                  tooltip: 'Reiniciar',
-                  child: const Icon(Icons.refresh),
-                ),
-              ],
-            ),
           ],
         ),
       ),
+      persistentFooterButtons: [
+        ElevatedButton(
+          onPressed: _incrementarContador,
+          child: const Text('Aumentar'),
+        ),
+        ElevatedButton(
+          onPressed: _disminuirContador,
+          child: const Text('Disminuir'),
+        ),
+        ElevatedButton(
+          onPressed: _reiniciarContador,
+          child: const Text('Reiniciar'),
+        ),
+      ],
     );
   }
 }
