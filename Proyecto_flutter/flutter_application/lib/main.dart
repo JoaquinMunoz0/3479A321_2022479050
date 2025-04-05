@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // 🛠️ Método refactorizado para construir los botones
+  //  Metodo refactorizado para construir los botones
   Widget _construirBotones() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
