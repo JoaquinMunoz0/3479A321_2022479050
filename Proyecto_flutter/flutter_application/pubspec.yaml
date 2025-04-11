@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_svg: ^2.0.17
   flutter:
     sdk: flutter
 
@@ -58,7 +59,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+      - C:\Users\munos\Documents\GitHub\3479A321_2022479050\Proyecto_flutter\flutter_application\assets\icons\8678759_device_fill_icon.svg
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
