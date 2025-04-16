@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             SvgPicture.asset(
-              'Proyecto_flutter/flutter_application/assets/icons/icono.svg',
+              'assets/icons/icono.svg',
               semanticsLabel: 'Dart Logo',
             ),
             const Text('Has apretado el boton:'),
@@ -108,4 +108,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
