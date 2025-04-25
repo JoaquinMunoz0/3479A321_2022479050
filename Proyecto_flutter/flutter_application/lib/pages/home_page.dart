@@ -75,24 +75,41 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SvgPicture.asset(
-              'assets/icons/icono.svg',
-              semanticsLabel: 'Dart Logo',
+        child: Card(
+          margin: const EdgeInsets.all(16.0),
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/icono.svg',
+                  semanticsLabel: 'Dart Logo',
+                  height: 100,
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Flutter es un framework de código abierto, que permite desarrollar aplicaciones multiplataforma con una sola base de codigo',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text('Has apretado el boton:'),
+                Text(
+                  '$_counter',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 16),
+                _construirBotones(),
+              ],
             ),
-            const Text('Has apretado el botón:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          ),
         ),
       ),
-      persistentFooterButtons: [
-        _construirBotones(),
-      ],
+      floatingActionButton: null,
     );
   }
 }
