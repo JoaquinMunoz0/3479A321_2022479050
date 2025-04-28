@@ -6,10 +6,10 @@ class ListContent extends StatefulWidget {
   const ListContent({super.key});
 
   @override
-  ListContentState createState() => ListContentState();  // Cambio aquí
+  ListContentState createState() => ListContentState();  
 }
 
-class ListContentState extends State<ListContent> {  // Cambio aquí
+class ListContentState extends State<ListContent> {  
   bool isDancing = false;
 
   final List<String> items = const [
@@ -56,15 +56,19 @@ class ListContentState extends State<ListContent> {  // Cambio aquí
             ),
           ),
 
+          // GIF con GestureDetector
           GestureDetector(
             onTap: _toggleDonkeyKong,
             child: Image.asset(
               isDancing
                   ? 'assets/donkey_kong_dancing.gif'
                   : 'assets/donkey_kong_quieto.gif',
-              width: isDancing ? 180 : 150,
+              width: isDancing ? 180 : 150, // Ajuste para que el GIF no ocupe demasiado
             ),
           ),
+
+          // Espacio flexible para evitar solapamiento
+          Spacer(),
         ],
       ),
       floatingActionButton: Stack(

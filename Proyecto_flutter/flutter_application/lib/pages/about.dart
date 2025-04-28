@@ -5,10 +5,10 @@ class About extends StatefulWidget {
   const About({super.key});
 
   @override
-  AboutState createState() => AboutState();  // Cambio aquí
+  AboutState createState() => AboutState();
 }
 
-class AboutState extends State<About> {  // Cambio aquí
+class AboutState extends State<About> {
   bool isDiddyDancing = false;
 
   void _toggleDiddyKong() {
@@ -30,7 +30,7 @@ class AboutState extends State<About> {  // Cambio aquí
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sobre Donkey Kong Country'),
-        automaticallyImplyLeading: false, // Quita el botón de regresar
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -51,9 +51,12 @@ class AboutState extends State<About> {  // Cambio aquí
               isDiddyDancing
                   ? 'assets/diddy_kong_dancing.gif'
                   : 'assets/diddy_kong_quieto.gif',
-              width: isDiddyDancing ? 180 : 200,
+              width: isDiddyDancing ? 180 : 150, // Ajuste para que el GIF no ocupe demasiado
             ),
           ),
+          
+          // Espacio flexible para evitar solapamiento
+          Spacer(),
         ],
       ),
       floatingActionButton: Stack(
