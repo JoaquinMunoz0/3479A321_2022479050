@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'pages/home_page.dart'; // Importa desde la carpeta pages
+import 'package:provider/provider.dart';
+import 'pages/home_page.dart';
+import 'provider/app_data.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppData(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 var logger = Logger();
@@ -16,13 +23,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     logger.i("Logger funcionando :D");
     return MaterialApp(
-      title: 'Aplicacion en Flutter',
+      title: 'Aplicación en Flutter',
       theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 87, 227)),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 255, 87, 227),
+        ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Demo de la aplicacion en Flutter'),
+      home: const MyHomePage(title: 'Demo de la aplicación en Flutter'),
     );
   }
 }

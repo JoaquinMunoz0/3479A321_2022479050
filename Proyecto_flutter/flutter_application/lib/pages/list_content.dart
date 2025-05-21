@@ -20,7 +20,7 @@ class ListContentState extends State<ListContent> {
     '5. R.E.P.O',
   ];
 
-  void _toggleDonkeyKong() {
+  /*void _toggleDonkeyKong() {
     setState(() {
       isDancing = !isDancing;
     });
@@ -32,7 +32,7 @@ class ListContentState extends State<ListContent> {
         });
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -41,35 +41,33 @@ class ListContentState extends State<ListContent> {
         title: const Text('Top Tier últimos juegos jugados'),
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Icon(Icons.check),
-                  title: Text(items[index]),
-                );
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: const Icon(Icons.check),
+                    title: Text(items[index]),
+                  );
+                },
+              ),
             ),
-          ),
-
-          // GIF con GestureDetector
-          GestureDetector(
-            onTap: _toggleDonkeyKong,
-            child: Image.asset(
-              isDancing
-                  ? 'assets/donkey_kong_dancing.gif'
-                  : 'assets/donkey_kong_quieto.gif',
-              width: isDancing ? 180 : 150, // Ajuste para que el GIF no ocupe demasiado
-            ),
-          ),
-
-          // Espacio flexible para evitar solapamiento
-          Spacer(),
-        ],
+            const SizedBox(height: 10),
+            /*GestureDetector(
+              onTap: _toggleDonkeyKong,
+              child: Image.asset(
+                isDancing
+                    ? 'assets/donkey_kong_dancing.gif'
+                    : 'assets/donkey_kong_quieto.gif',
+                width: isDancing ? 180 : 150,
+              ),
+            ),*/
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
       floatingActionButton: Stack(
         children: [
