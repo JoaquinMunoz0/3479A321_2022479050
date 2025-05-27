@@ -41,7 +41,6 @@ class DatabaseHelper {
     ''');
   }
 
-  // Insertar actividad
   Future<void> insertActivity(Actividad actividad) async {
     final db = await database;
     await db.insert(
@@ -51,14 +50,12 @@ class DatabaseHelper {
     );
   }
 
-  // Obtener todas las actividades
   Future<List<Actividad>> getActivities() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('activities');
     return List.generate(maps.length, (i) => Actividad.fromMap(maps[i]));
   }
 
-  // Editar actividad
   Future<void> updateActivity(Actividad actividad) async {
     final db = await database;
     await db.update(
@@ -69,7 +66,6 @@ class DatabaseHelper {
     );
   }
 
-  // Eliminar actividad
   Future<void> deleteActivity(int id) async {
     final db = await database;
     await db.delete(

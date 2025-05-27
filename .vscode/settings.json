@@ -1,3 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "C:/Users/munos/Documents/GitHub/3479A321_2022479050/Proyecto_flutter/flutter_application/linux"
 }

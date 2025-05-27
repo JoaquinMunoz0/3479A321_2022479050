@@ -5,7 +5,6 @@ class Actividad {
 
   Actividad({this.id, required this.fecha, required this.nombre});
 
-  // Convertir la actividad a un mapa para SQLite
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -14,7 +13,6 @@ class Actividad {
     };
   }
 
-  // Crear una instancia desde un mapa (consulta SQLite)
   factory Actividad.fromMap(Map<String, dynamic> map) {
     return Actividad(
       id: map['id'],
