@@ -4,8 +4,13 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
 import 'provider/app_data.dart';
+import 'services/database_helper.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper().initializeDatabase();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppData(),
