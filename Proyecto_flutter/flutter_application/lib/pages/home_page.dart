@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../entity/actividad.dart';
-import '../services/database_helper.dart';
 import '../provider/app_data.dart';
 import 'list_content.dart';
 import 'about.dart';
-import 'preference_app.dart';
-import 'activity_screen.dart';
+import 'dart:async';
+
 
 var logger = Logger();
 
@@ -23,52 +20,18 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List<Actividad> _actividades = [];
-  bool _isLoading = true;
+int _imageIndex = 3;
+String _imageUrl = 'https://picsum.photos/250?image=$_imageIndex';
 
+class _MyHomePageState extends State<MyHomePage>{
   _MyHomePageState() {
     logger.i("Constructor ejecutado. mounted: $mounted");
-  }
-
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    final isResetEnabled = prefs.getBool('isResetEnabled') ?? false;
-
-    if (!mounted) return;
-
-    context.read<AppData>().setEnableReset(isResetEnabled);
-    logger.i("Preferencias cargadas desde SharedPreferences: isResetEnabled = $isResetEnabled");
-  }
-
-  Future<void> _loadActivities() async {
-    setState(() {
-      _isLoading = true;
-    });
-    final actividades = await DatabaseHelper().getActivities();
-    if (!mounted) return;
-    setState(() {
-      _actividades = actividades;
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _addActivity() async {
-    final nuevaActividad = Actividad(
-      fecha: DateTime.now().toIso8601String(),
-      nombre: 'Nueva actividad ${_actividades.length + 1}',
-    );
-
-    await DatabaseHelper().insertActivity(nuevaActividad);
-    await _loadActivities();
   }
 
   @override
   void initState() {
     super.initState();
     logger.i("initState ejecutado");
-    _loadPreferences();
-    _loadActivities();
   }
 
   @override
@@ -153,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ElevatedButton.icon(
           onPressed: _navegarSegunContador,
           icon: const Icon(Icons.navigation),
-          label: const Text('Navegar segun contador'),
+          label: const Text('Navegar según contador'),
         ),
         ElevatedButton.icon(
           onPressed: () {
@@ -175,16 +138,34 @@ class _MyHomePageState extends State<MyHomePage> {
           icon: const Icon(Icons.info),
           label: const Text('Sobre la App'),
         ),
-        ElevatedButton.icon(
-          onPressed: () async {
-            await _addActivity();
-            logger.i('Nueva actividad agregada');
-          },
-          icon: const Icon(Icons.add_task),
-          label: const Text('Agregar actividad'),
-        ),
       ],
     );
+  }
+
+  Future<void> getNewImage() async {
+  final nextIndex = _imageIndex + 1;
+  final newImageUrl = 'https://picsum.photos/250?image=$nextIndex';
+
+  try {
+    final response = await http.get(Uri.parse(newImageUrl));
+    if (response.statusCode == 200) {
+      setState(() {
+        _imageIndex = nextIndex;
+        _imageUrl = newImageUrl;
+        logger.i("Imagen actualizada");
+      });
+    } else {
+      setState(() {
+        _imageUrl = '';
+        logger.w("La imagen no esta disponible");
+      });
+    }
+  } catch (e) {
+      setState(() {
+        _imageUrl = '';
+        logger.e("Error al obtener imagen");
+      });
+    }
   }
 
   @override
@@ -199,76 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
-        automaticallyImplyLeading: true,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              child: const Text(
-                'Menu',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Inicio'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Inicio')),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.list),
-              title: const Text('Lista de elementos'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ListContent()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('Sobre la app'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const About()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Preferencias'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PreferenceApp()),
-                ).then((_) {
-                  _loadPreferences();
-                });
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('Actividades'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ActivityScreen()),
-                );
-              },
-            ),
-          ],
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -302,27 +214,28 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(height: 8),
                     Text('Bienvenido, $username'),
                     const SizedBox(height: 20),
-
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : _actividades.isEmpty
-                            ? const Text('No hay actividades guardadas.')
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _actividades.length,
-                                itemBuilder: (context, index) {
-                                  final actividad = _actividades[index];
-                                  return ListTile(
-                                    title: Text(actividad.nombre),
-                                    subtitle: Text(actividad.fecha),
-                                  );
-                                },
-                              ),
-
-                    const SizedBox(height: 20),
-
                     _construirBotones(context),
+                    const SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      onPressed: getNewImage,
+                      icon: const Icon(Icons.image),
+                      label: const Text('Cambiar imagen'),
+                    ),
+                    const SizedBox(height: 10),
+                    Image.network(
+                      _imageUrl.isNotEmpty ? _imageUrl : '',
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Center(
+                          child: Text(
+                            'Error al cargar imagen',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
