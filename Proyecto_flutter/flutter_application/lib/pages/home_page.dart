@@ -1,4 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pages/take_picture_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -22,6 +26,7 @@ class MyHomePage extends StatefulWidget {
 
 int _imageIndex = 3;
 String _imageUrl = 'https://picsum.photos/250?image=$_imageIndex';
+String? _imagePath;
 
 class _MyHomePageState extends State<MyHomePage>{
   _MyHomePageState() {
@@ -142,10 +147,27 @@ class _MyHomePageState extends State<MyHomePage>{
     );
   }
 
+  Future<void> _tomarFoto() async {
+    final cameras = await availableCameras();
+    final firstCamera = cameras.first;
+
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => TakePictureScreen(camera: firstCamera),
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        _imagePath = result as String;
+        logger.i("Imagen tomada: $_imagePath");
+      });
+    }
+  }
+
   Future<void> getNewImage() async {
   final nextIndex = _imageIndex + 1;
   final newImageUrl = 'https://picsum.photos/250?image=$nextIndex';
-
   try {
     final response = await http.get(Uri.parse(newImageUrl));
     if (response.statusCode == 200) {
@@ -206,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage>{
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const Text('Has apretado el botón:'),
+                    const Text('Has apretado el boton:'),
                     Text(
                       '$counter',
                       style: Theme.of(context).textTheme.headlineMedium,
