@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pages/take_picture_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../provider/app_data.dart';
+import 'gallery_screen.dart';
 
 var logger = Logger();
 
@@ -107,7 +107,17 @@ class _MyHomePageState extends State<MyHomePage> {
         ElevatedButton.icon(
           onPressed: _tomarFoto,
           icon: const Icon(Icons.camera_alt),
-          label: const Text('Tomar foto con cámara'),
+          label: const Text('Tomar captura'),
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const GalleryScreen()),
+            );
+          },
+          icon: const Icon(Icons.photo_library),
+          label: const Text('Galería'),
         ),
       ],
     );
@@ -184,19 +194,38 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SvgPicture.asset(
-                      'assets/icons/icono.svg',
-                      semanticsLabel: 'Dart Logo',
-                      height: 100,
-                    ),
-                    const SizedBox(height: 12),
                     const Text(
                       'Framework Flutter',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
-                    const Text('Has apretado el botón:'),
+                    const SizedBox(height: 12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: _imagePath != null
+                          ? Image.file(
+                              File(_imagePath!),
+                              width: double.infinity,
+                              height: 250,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              _imageUrl.isNotEmpty ? _imageUrl : '',
+                              width: double.infinity,
+                              height: 250,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Center(
+                                  child: Text(
+                                    'Error al cargar imagen',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Has apretado el botón:', textAlign: TextAlign.center,),
                     Text(
                       '$counter',
                       style: Theme.of(context).textTheme.headlineMedium,
@@ -206,28 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text('Bienvenido, $username', textAlign: TextAlign.center),
                     const SizedBox(height: 20),
                     _construirBotones(context),
-                    const SizedBox(height: 20),
-                    _imagePath != null
-                        ? Image.file(
-                            File(_imagePath!),
-                            width: double.infinity,
-                            height: 250,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            _imageUrl.isNotEmpty ? _imageUrl : '',
-                            width: double.infinity,
-                            height: 250,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Center(
-                                child: Text(
-                                  'Error al cargar imagen',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              );
-                            },
-                          ),
                   ],
                 ),
               ),

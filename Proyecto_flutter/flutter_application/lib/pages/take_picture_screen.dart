@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'preview_picture_screen.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -54,18 +56,24 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
 
-            if (!context.mounted) return;
+            //GUARDAR IMAGEN
+            final directory = await getApplicationDocumentsDirectory();
+            final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+            final imagePath = path.join(directory.path, fileName);
+            await image.saveTo(imagePath);
+
+            if (!mounted) return;
 
             final result = await Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => PreviewPictureScreen(
-                  imagePath: image.path,
-                ),
+                builder: (context) => PreviewPictureScreen(imagePath: imagePath),
               ),
             );
+
+            if (!mounted) return;
+
             Navigator.of(context).pop(result);
           } catch (e) {
-            // ignore: avoid_print
             print(e);
           }
         },
