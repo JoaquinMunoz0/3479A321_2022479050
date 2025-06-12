@@ -1,5 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
-
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pages/take_picture_screen.dart';
@@ -8,10 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../provider/app_data.dart';
-import 'list_content.dart';
-import 'about.dart';
-import 'dart:async';
-
 
 var logger = Logger();
 
@@ -26,9 +21,10 @@ class MyHomePage extends StatefulWidget {
 
 int _imageIndex = 3;
 String _imageUrl = 'https://picsum.photos/250?image=$_imageIndex';
-String? _imagePath;
 
-class _MyHomePageState extends State<MyHomePage>{
+class _MyHomePageState extends State<MyHomePage> {
+  String? _imagePath;
+
   _MyHomePageState() {
     logger.i("Constructor ejecutado. mounted: $mounted");
   }
@@ -69,21 +65,6 @@ class _MyHomePageState extends State<MyHomePage>{
     logger.i("reassemble ejecutado (hot reload)");
   }
 
-  void _navegarSegunContador() {
-    final counter = context.read<AppData>().counter;
-    if (counter % 2 == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ListContent()),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const About()),
-      );
-    }
-  }
-
   Widget _construirBotones(BuildContext context) {
     final enableReset = context.watch<AppData>().enableReset;
 
@@ -119,29 +100,14 @@ class _MyHomePageState extends State<MyHomePage>{
           label: const Text('Reiniciar'),
         ),
         ElevatedButton.icon(
-          onPressed: _navegarSegunContador,
-          icon: const Icon(Icons.navigation),
-          label: const Text('Navegar según contador'),
+          onPressed: getNewImage,
+          icon: const Icon(Icons.image),
+          label: const Text('Imagen desde internet'),
         ),
         ElevatedButton.icon(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ListContent()),
-            );
-          },
-          icon: const Icon(Icons.list),
-          label: const Text('Ver Lista'),
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const About()),
-            );
-          },
-          icon: const Icon(Icons.info),
-          label: const Text('Sobre la App'),
+          onPressed: _tomarFoto,
+          icon: const Icon(Icons.camera_alt),
+          label: const Text('Tomar foto con cámara'),
         ),
       ],
     );
@@ -166,26 +132,26 @@ class _MyHomePageState extends State<MyHomePage>{
   }
 
   Future<void> getNewImage() async {
-  final nextIndex = _imageIndex + 1;
-  final newImageUrl = 'https://picsum.photos/250?image=$nextIndex';
-  try {
-    final response = await http.get(Uri.parse(newImageUrl));
-    if (response.statusCode == 200) {
-      setState(() {
-        _imageIndex = nextIndex;
-        _imageUrl = newImageUrl;
-        logger.i("Imagen actualizada");
-      });
-    } else {
+    final nextIndex = _imageIndex + 1;
+    final newImageUrl = 'https://picsum.photos/250?image=$nextIndex';
+    try {
+      final response = await http.get(Uri.parse(newImageUrl));
+      if (response.statusCode == 200) {
+        setState(() {
+          _imageIndex = nextIndex;
+          _imageUrl = newImageUrl;
+          logger.i("Imagen actualizada desde internet");
+        });
+      } else {
+        setState(() {
+          _imageUrl = '';
+          logger.w("La imagen no está disponible");
+        });
+      }
+    } catch (e) {
       setState(() {
         _imageUrl = '';
-        logger.w("La imagen no esta disponible");
-      });
-    }
-  } catch (e) {
-      setState(() {
-        _imageUrl = '';
-        logger.e("Error al obtener imagen");
+        logger.e("Error al obtener imagen desde internet");
       });
     }
   }
@@ -216,6 +182,7 @@ class _MyHomePageState extends State<MyHomePage>{
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SvgPicture.asset(
                       'assets/icons/icono.svg',
@@ -226,38 +193,41 @@ class _MyHomePageState extends State<MyHomePage>{
                     const Text(
                       'Framework Flutter',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    const Text('Has apretado el boton:'),
+                    const Text('Has apretado el botón:'),
                     Text(
                       '$counter',
                       style: Theme.of(context).textTheme.headlineMedium,
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    Text('Bienvenido, $username'),
+                    Text('Bienvenido, $username', textAlign: TextAlign.center),
                     const SizedBox(height: 20),
                     _construirBotones(context),
                     const SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: getNewImage,
-                      icon: const Icon(Icons.image),
-                      label: const Text('Cambiar imagen'),
-                    ),
-                    const SizedBox(height: 10),
-                    Image.network(
-                      _imageUrl.isNotEmpty ? _imageUrl : '',
-                      width: 250,
-                      height: 250,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Text(
-                            'Error al cargar imagen',
-                            style: TextStyle(color: Colors.red),
+                    _imagePath != null
+                        ? Image.file(
+                            File(_imagePath!),
+                            width: double.infinity,
+                            height: 250,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.network(
+                            _imageUrl.isNotEmpty ? _imageUrl : '',
+                            width: double.infinity,
+                            height: 250,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Center(
+                                child: Text(
+                                  'Error al cargar imagen',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
