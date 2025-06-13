@@ -25,48 +25,20 @@ String _imageUrl = 'https://picsum.photos/250?image=$_imageIndex';
 class _MyHomePageState extends State<MyHomePage> {
   String? _imagePath;
 
-  _MyHomePageState() {
-    logger.i("Constructor ejecutado. mounted: $mounted");
-  }
-
   @override
   void initState() {
     super.initState();
     logger.i("initState ejecutado");
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    logger.i("didChangeDependencies ejecutado");
-  }
-
-  @override
-  void didUpdateWidget(covariant MyHomePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    logger.i("didUpdateWidget ejecutado");
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    logger.i("deactivate ejecutado");
-  }
-
-  @override
-  void dispose() {
-    logger.i("dispose ejecutado");
-    super.dispose();
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    logger.i("reassemble ejecutado (hot reload)");
-  }
-
   Widget _construirBotones(BuildContext context) {
     final enableReset = context.watch<AppData>().enableReset;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final buttonStyle = ElevatedButton.styleFrom(
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+    );
 
     return Wrap(
       alignment: WrapAlignment.center,
@@ -80,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           icon: const Icon(Icons.add),
           label: const Text('Aumentar'),
+          style: buttonStyle,
         ),
         ElevatedButton.icon(
           onPressed: () {
@@ -88,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           icon: const Icon(Icons.remove),
           label: const Text('Disminuir'),
+          style: buttonStyle,
         ),
         ElevatedButton.icon(
           onPressed: enableReset
@@ -98,16 +72,19 @@ class _MyHomePageState extends State<MyHomePage> {
               : null,
           icon: const Icon(Icons.refresh),
           label: const Text('Reiniciar'),
+          style: buttonStyle,
         ),
         ElevatedButton.icon(
           onPressed: getNewImage,
           icon: const Icon(Icons.image),
           label: const Text('Imagen desde internet'),
+          style: buttonStyle,
         ),
         ElevatedButton.icon(
           onPressed: _tomarFoto,
           icon: const Icon(Icons.camera_alt),
           label: const Text('Tomar captura'),
+          style: buttonStyle,
         ),
         ElevatedButton.icon(
           onPressed: () {
@@ -118,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           icon: const Icon(Icons.photo_library),
           label: const Text('Galería'),
+          style: buttonStyle,
         ),
       ],
     );
@@ -173,11 +151,18 @@ class _MyHomePageState extends State<MyHomePage> {
     final appData = context.watch<AppData>();
     final counter = appData.counter;
     final username = appData.username;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: colorScheme.primaryContainer,
+        title: Text(
+          widget.title,
+          style: textTheme.titleLarge?.copyWith(color: colorScheme.onPrimaryContainer),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
@@ -185,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Card(
+              color: colorScheme.surface,
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -194,9 +180,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Framework Flutter',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: textTheme.titleMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 12),
@@ -215,24 +201,32 @@ class _MyHomePageState extends State<MyHomePage> {
                               height: 250,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return const Center(
+                                return Center(
                                   child: Text(
                                     'Error al cargar imagen',
-                                    style: TextStyle(color: Colors.red),
+                                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.error),
                                   ),
                                 );
                               },
                             ),
                     ),
                     const SizedBox(height: 20),
-                    const Text('Has apretado el botón:', textAlign: TextAlign.center,),
+                    Text(
+                      'Has apretado el botón:',
+                      style: textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
                     Text(
                       '$counter',
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: textTheme.headlineMedium,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
-                    Text('Bienvenido, $username', textAlign: TextAlign.center),
+                    Text(
+                      'Bienvenido, $username',
+                      style: textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
                     const SizedBox(height: 20),
                     _construirBotones(context),
                   ],

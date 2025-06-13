@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'preview_picture_screen.dart';
+import '../widgets/preview_picture_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 

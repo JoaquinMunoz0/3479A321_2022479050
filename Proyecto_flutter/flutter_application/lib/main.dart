@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
 import 'provider/app_data.dart';
-import 'services/database_helper.dart';
+import 'data/database_helper.dart';
+import 'theme/util.dart';
+import 'theme/theme.dart';
 
 
 void main() async {
@@ -26,19 +27,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+    TextTheme textTheme = createTextTheme(context, "Abhaya Libre", "Orbitron");
+    MaterialTheme theme = MaterialTheme(textTheme);
     logger.i("Logger funcionando :D");
     return MaterialApp(
-      title: 'Aplicación en Flutter',
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 255, 87, 227),
-        ),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Demo de la aplicación en Flutter'),
+      title: 'Flutter Demo',
+      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      home: const MyHomePage(title: 'Home'),
     );
   }
 }

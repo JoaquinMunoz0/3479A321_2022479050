@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import '../entity/actividad.dart';
-import '../services/database_helper.dart';
+import '../data/models/actividad.dart';
+import '../data/database_helper.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
